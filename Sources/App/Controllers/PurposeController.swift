@@ -26,10 +26,15 @@ class PurposeController {
     
     public func fetchPurposeWhereUserIsPresent(_ req: Request) throws -> Future<[GetPurposeResponse]> {
         let user = try req.requireAuthenticated(User.self)
+        let logger = try req.make(Logger.self)
+        logger.info(try user.requireID().description)
         return PurposeUser.query(on: req).filter(\.userId, .equal, try user.requireID()).all().flatMap { results in
+            
             return try results.map { item in
+                
                 try self.getPurposeData(req, purposeUser: item).flatMap { purpose in
                     return try self.getPurposeData1(req, purposeUser: item).flatMap { purposeResponse in
+                        logger.info(purposeResponse.id.description + " " + purposeResponse.name.description)
                         return try self.getPurposeUsers1(req, purpose: purpose).and(result: purposeResponse).map { (users, purposeR) in
                             var response = purposeR
                             response.persons = users
