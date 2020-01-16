@@ -66,7 +66,16 @@ class PurposeController {
                     return response.id == user.id!
                 }.first
                 
-                return GetPurposeResponse(id: try purpose.requireID(), name: purpose.title, targetAmmount: purpose.targetAmmount ?? 0.0, currentAmmount: 0.0, imageUrl: purpose.imagePath, description: purpose.description, finishDate: (purpose.finishDate?.value)!, isInitial: currentUser?.purposeState == PurposeUserState.initital.rawValue, persons: users)
+                var ca = 0.0
+                for user in users {
+                    for payment in user.payments {
+                        if payment.state == "DONE" {
+                            ca += payment.ammount
+                        }
+                        
+                    }
+                }
+                return GetPurposeResponse(id: try purpose.requireID(), name: purpose.title, targetAmmount: purpose.targetAmmount ?? 0.0, currentAmmount: ca, imageUrl: purpose.imagePath, description: purpose.description, finishDate: (purpose.finishDate?.value)!, isInitial: currentUser?.purposeState == PurposeUserState.initital.rawValue, persons: users)
             }
         }
     }
