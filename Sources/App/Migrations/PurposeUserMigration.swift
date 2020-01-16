@@ -20,6 +20,9 @@ extension PurposeUser: Migration {
             builder.reference(from: \.purposeId, to: \Purpose.id)
             builder.field(for: \.state)
             builder.unique(on: \.userId, \.purposeId)
+            builder.field(for: \.createdAt)
+            builder.field(for: \.updatedAt)
+            builder.field(for: \.deletedAt)
         }
     }
 }

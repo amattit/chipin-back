@@ -15,6 +15,14 @@ struct PurposeUser: PostgreSQLModel {
     var purposeId: Purpose.ID
     var state: String
     
+    static let createdAtKey: TimestampKey? = \.createdAt
+    static let updatedAtKey: TimestampKey? = \.updatedAt
+    static let deletedAtKey: TimestampKey? = \.deletedAt
+
+    var createdAt: Date?
+    var updatedAt: Date?
+    var deletedAt: Date?
+    
     init(userId: Int, purposeId: Int, state: PurposeUserState) {
         self.userId = userId
         self.purposeId = purposeId

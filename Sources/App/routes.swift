@@ -22,7 +22,7 @@ public func routes(_ router: Router) throws {
     bearer.get("purpose", use: purposeController.fetchPurposeWhereUserIsPresent)
     bearer.get("purpose", Int.parameter, use: purposeController.fetchPurposeById)
     bearer.delete("purpose", Int.parameter, use: purposeController.archivePurpose)
-    bearer.put("purpose", Int.parameter, use: purposeController.archivePurpose)
+    bearer.put("purpose", Int.parameter, use: purposeController.editPurpose)
     
     bearer.put("person", "state", use: userController.addPurposeMember)
     

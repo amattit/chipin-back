@@ -72,6 +72,7 @@ class PurposeController {
             .flatMap { purposeUser in
                 if purposeUser.state == PurposeUserState.initital.rawValue {
                     return purposeUser.purpose.query(on: req).first().unwrap(or: Abort(.notFound, reason: "Кампания не найдена")).flatMap { purposeResult in
+                        _ = purposeUser.delete(on: req)
                         return purposeResult
                             .delete(on: req)
                             .transform(to: HTTPStatus.ok)
@@ -99,7 +100,7 @@ class PurposeController {
                             purposeResult.description = requestData.description
                             purposeResult.finishDate = requestData.finishDate.value
                             purposeResult.targetAmmount = requestData.targetAmmount
-                            purposeResult.imagePath = requestData.imageUrl
+                            purposeResult.imagePath = requestData.imageUrl ?? ""
                             
                             return purposeResult.save(on: req).transform(to: HTTPStatus.ok)
                                 
@@ -219,7 +220,7 @@ struct CreatePurposeRequest: Content {
 }
 
 struct EditPurposeRequest: Content {
-    let imageUrl: String
+    var imageUrl: String?
     let targetAmmount: Double
     let description: String
     let finishDate: DateFormatFromMobile
