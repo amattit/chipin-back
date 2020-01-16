@@ -32,6 +32,7 @@ public func routes(_ router: Router) throws {
     bearer.post("purpose", Int.parameter, "payment", use: paymentController.addPaymentData)
 //    bearer.get("purpose", "find", use: purposeController.findInitialPurpose)
     bearer.put("person", use: userController.editUserRequest)
-    bearer.put("token", "token", use: userController.addDeviceToken)
+    bearer.put("person", "token", use: userController.addDeviceToken)
+    bearer.put("yandex", use: userController.setYandexConnect)
     
 }
