@@ -118,9 +118,16 @@ final class UserController {
     public func addDeviceToken(_ req: Request) throws -> Future<HTTPStatus> {
         let user = try req.requireAuthenticated(User.self)
         return try req.content.decode(TokenRequest.self).flatMap { request in
-            return Device(userId: try user.requireID(), token: request.token, platform: "UNKNOWN").save(on: req).transform(to: HTTPStatus.ok)
+            return Device(id: nil, userId: try user.requireID(), token: request.token, platform: "UNKNOWN").save(on: req).transform(to: HTTPStatus.ok)
         }
-        
+    }
+    
+    public func setYandexConnect(_ req: Request) throws -> Future<HTTPStatus> {
+        let user = try req.requireAuthenticated(User.self)
+        return try req.content.decode(IsYandexConnectRequest.self).flatMap { request in
+            user.isYandexConnect = request.connect
+            return user.save(on: req).transform(to: HTTPStatus.ok)
+        }
     }
     
     private func findUserByPhone(_ req: Request, phone: Phone) -> Future<User?> {
@@ -172,4 +179,8 @@ struct EditUserInfoRequest: Content {
 
 struct TokenRequest: Content {
     let token: String
+}
+
+struct IsYandexConnectRequest: Content {
+    let connect: Bool
 }

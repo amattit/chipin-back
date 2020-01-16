@@ -26,7 +26,7 @@ final class Device: PostgreSQLModel {
     var updatedAt: Date?
     var deletedAt: Date?
     
-    init(userId: Int, token: String, platform: String) {
+    init(id: Int?, userId: Int, token: String, platform: String) {
         self.userId = userId
         self.token = token
         self.platform = platform
