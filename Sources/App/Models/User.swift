@@ -41,6 +41,10 @@ extension User {
     var payments: Children<User, Payment> {
         return children(\.userId)
     }
+    
+    var deviceTokens: Children<User, Device> {
+        return children(\.userId)
+    }
 }
 
 /// Allows users to be verified by bearer / token auth middleware.

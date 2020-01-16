@@ -93,7 +93,9 @@ final class UserController {
                 .flatMap { purposeUser in
                     if purposeUser != nil {
                         var item = purposeUser
-                        item!.state = PurposeUserState.init(rawValue: request.state.uppercased())!.rawValue
+                        if item!.state != PurposeUserState.initital.rawValue {
+                            item!.state = PurposeUserState.init(rawValue: request.state.uppercased())!.rawValue
+                        }
                         return item!.save(on: req).transform(to: HTTPStatus.ok)
                     } else {
                         return Purpose.query(on: req).filter(\.id, .equal, request.purposeId).first().unwrap(or: Abort(.badRequest, reason: "Такой цели сбора средств не существует")).flatMap { purpose in
@@ -101,6 +103,22 @@ final class UserController {
                         }
                     }
             }
+        }
+    }
+    
+    public func editUserRequest(_ req: Request) throws -> Future<HTTPStatus> {
+        let user = try req.requireAuthenticated(User.self)
+        return try req.content.decode(EditUserInfoRequest.self).flatMap { request in
+            user.name = request.name
+            user.imagePath = request.imagePath
+            return user.save(on: req).transform(to: HTTPStatus.ok)
+        }
+    }
+    
+    public func addDeviceToken(_ req: Request) throws -> Future<HTTPStatus> {
+        let user = try req.requireAuthenticated(User.self)
+        return try req.content.decode(TokenRequest.self).flatMap { request in
+            return Device(userId: try user.requireID(), token: request.token, platform: "UNKNOWN").save(on: req).transform(to: HTTPStatus.ok)
         }
         
     }
@@ -145,4 +163,13 @@ struct UserResponse: Content {
 struct AddPurposeMemberRequest: Content {
     let state: String
     let purposeId: Int
+}
+
+struct EditUserInfoRequest: Content {
+    let name: String
+    let imagePath: String
+}
+
+struct TokenRequest: Content {
+    let token: String
 }
