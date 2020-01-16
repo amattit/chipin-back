@@ -38,6 +38,16 @@ class PurposeController {
                         return try self.getPurposeUsers1(req, purpose: purpose).and(result: purposeResponse).map { (users, purposeR) in
                             var response = purposeR
                             response.persons = users
+                            var ca = 0.0
+                            for user in users {
+                                for paymen in user.payments {
+                                    if paymen.state == "DONE" {
+                                        ca += paymen.ammount
+                                    }
+                                    
+                                }
+                            }
+                            response.currentAmmount = ca
                             return response
                         }
                     }
@@ -192,7 +202,7 @@ struct GetPurposeResponse: Content {
     let id: Int
     let name: String
     let targetAmmount: Double
-    let currentAmmount: Double
+    var currentAmmount: Double
     let imageUrl : String
     let description: String
     let finishDate: DateFormatFromMobile
