@@ -11,7 +11,7 @@ public func routes(_ router: Router) throws {
     // bearer / token auth protected routes
     let bearer = router.grouped(User.tokenAuthMiddleware())
     
-    router.get("/") { req in
+    router.get("hello") { req in
         return "Hello, world!"
     }
     
