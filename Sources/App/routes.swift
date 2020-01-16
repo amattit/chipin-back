@@ -11,6 +11,10 @@ public func routes(_ router: Router) throws {
     // bearer / token auth protected routes
     let bearer = router.grouped(User.tokenAuthMiddleware())
     
+    router.get("/") { req in
+        return "Hello, world!"
+    }
+    
     router.post("authorize", use: userController.authorize)
     router.post("authorize", "code", use: userController.checkCode)
     
