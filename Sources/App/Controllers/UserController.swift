@@ -30,7 +30,7 @@ final class UserController {
         }
     }
     
-    func authorize(_ req: Request) throws -> Future<HTTPResponse> {
+    func authorize(_ req: Request) throws -> Future<HTTPStatus> {
         return try req.content.decode(CreateUserRequest.self).flatMap { request in
             let code = AuthUserTmpData.shared.addCode(for: request.phoneNumber, name: request.name)
             
@@ -44,12 +44,11 @@ final class UserController {
 
             let client = HTTPClient.connect(hostname: "smsc.ru", on: req)
 
-            return client.flatMap(to: HTTPResponse.self) { client in
+            return client.flatMap(to: HTTPStatus.self) { client in
                 print(httpReq)
-                return client.send(httpReq)
+                return client.send(httpReq).transform(to: HTTPStatus.ok)
             }
-            
-        }//.transform(to: HTTPResponse.init())
+        }
     }
     
     func checkCode(_ req: Request) throws -> Future<String> {
