@@ -5,15 +5,14 @@
 //  Created by Михаил Серёгин on 14.01.2020.
 //
 
-import Foundation
-import FluentSQLite
+import FluentPostgreSQL
 import Vapor
 
 /// Allows `User` to be used as a Fluent migration.
 extension User: Migration {
     /// See `Migration`.
-    static func prepare(on conn: SQLiteConnection) -> Future<Void> {
-        return SQLiteDatabase.create(User.self, on: conn) { builder in
+    static func prepare(on connection: PostgreSQLConnection) -> EventLoopFuture<Void> {
+        Database.create(User.self, on: connection) { builder in
             builder.field(for: \.id, isIdentifier: true)
             builder.field(for: \.name)
             builder.field(for: \.phoneNumber)

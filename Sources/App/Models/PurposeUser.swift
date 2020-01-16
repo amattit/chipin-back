@@ -5,10 +5,10 @@
 //  Created by Михаил Серёгин on 14.01.2020.
 //
 
-import FluentSQLite
+import FluentPostgreSQL
 import Vapor
 
-struct PurposeUser: SQLiteModel {
+struct PurposeUser: PostgreSQLModel {
     
     var id: Int?
     var userId: User.ID

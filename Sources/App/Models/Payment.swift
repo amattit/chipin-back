@@ -5,11 +5,11 @@
 //  Created by Михаил Серёгин on 14.01.2020.
 //
 
-import FluentSQLite
+import FluentPostgreSQL
 import Vapor
 
 /// A registered user, capable of owning todo items.
-final class Payment: SQLiteModel {
+final class Payment: PostgreSQLModel {
     
     /// Идентификатор платежа
     var id: Int?

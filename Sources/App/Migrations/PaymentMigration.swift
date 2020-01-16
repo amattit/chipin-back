@@ -5,14 +5,14 @@
 //  Created by Михаил Серёгин on 14.01.2020.
 //
 
-import FluentSQLite
+import FluentPostgreSQL
 import Vapor
 
 /// Allows `User` to be used as a Fluent migration.
 extension Payment: Migration {
     /// See `Migration`.
-    static func prepare(on conn: SQLiteConnection) -> Future<Void> {
-        return SQLiteDatabase.create(Payment.self, on: conn) { builder in
+    static func prepare(on connection: PostgreSQLConnection) -> EventLoopFuture<Void> {
+        Database.create(Payment.self, on: connection) { (builder) in
             builder.field(for: \.id, isIdentifier: true)
             builder.field(for: \.ammount)
             builder.field(for: \.channel)
@@ -26,6 +26,7 @@ extension Payment: Migration {
             builder.field(for: \.createdAt)
             builder.field(for: \.updatedAt)
             builder.field(for: \.deletedAt)
+            
         }
     }
 }

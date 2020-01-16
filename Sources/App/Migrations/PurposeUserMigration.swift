@@ -7,12 +7,12 @@
 
 
 import Vapor
-import FluentSQLite
+import FluentPostgreSQL
 
 extension PurposeUser: Migration {
     
-    static func prepare(on conn: SQLiteConnection) -> Future<Void> {
-        return SQLiteDatabase.create(PurposeUser.self, on: conn) { builder in
+    static func prepare(on connection: PostgreSQLConnection) -> EventLoopFuture<Void> {
+        Database.create(PurposeUser.self, on: connection) { builder in
             builder.field(for: \.id, isIdentifier: true)
             builder.field(for: \.userId)
             builder.reference(from: \.userId, to: \User.id)
