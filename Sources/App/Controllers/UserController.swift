@@ -30,17 +30,26 @@ final class UserController {
         }
     }
     
-    func authorize(_ req: Request) throws -> Future<HTTPStatus> {
-        return try req.content.decode(CreateUserRequest.self).map { request in
+    func authorize(_ req: Request) throws -> Future<HTTPResponse> {
+        return try req.content.decode(CreateUserRequest.self).flatMap { request in
             let code = AuthUserTmpData.shared.addCode(for: request.phoneNumber, name: request.name)
-            let client = HTTPClient.connect(hostname: "https://smsc.ru", on: req)
             
-            let _ = client.map {clientRes in
-                let smsRequest = HTTPRequest(method: .GET, url: "/sys/send.php?login=_silo@mail.ru&psw=jGA76A81&phones=7\(request.phoneNumber)&mes=Ваш код доступа к приложению: \(code)")
-                let _ = try clientRes.send(smsRequest).wait()
+            let headers: HTTPHeaders = .init()
+            let url = URL(string: "/sys/send.php?login=_silo@mail.ru&psw=jGA76A81&phones=7\(request.phoneNumber)&mes=Ваш код доступа к приложению: \(code)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)
+            let httpReq = HTTPRequest(
+                method: .POST,
+                url: url!,
+                headers: headers,
+                body: HTTPBody())
+
+            let client = HTTPClient.connect(hostname: "smsc.ru", on: req)
+
+            return client.flatMap(to: HTTPResponse.self) { client in
+                print(httpReq)
+                return client.send(httpReq)
             }
-            return HTTPStatus.ok
-        }
+            
+        }//.transform(to: HTTPResponse.init())
     }
     
     func checkCode(_ req: Request) throws -> Future<String> {
