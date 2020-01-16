@@ -6,7 +6,7 @@
 //
 
 import Vapor
-import FluentSQLite
+import FluentPostgreSQL
 
 class PurposeController {
     
@@ -136,6 +136,14 @@ class PurposeController {
             .filter(\.state, .equal, PurposeUserState.initital.rawValue).all()
             .flatMap { return try $0.map { try self.getPurposeData1(req, purposeUser: $0)}
                 .flatten(on: req)
+        }
+    }
+    
+    private func getPaymentsByUserAndPurpose(_ req: Request, user: User, purpose: Purpose) throws -> Future<[PaymentResponse]> {
+        return try user.payments.query(on: req).filter(\.purposeId, .equal, try purpose.requireID()).all().map { payments in
+            return try payments.compactMap { payment in
+                return PaymentResponse(id: try payment.requireID(), ammount: payment.ammount, paymentMethod: payment.paymentMethod, paymentDate: payment.paymentDate.value!)
+            }
         }
     }
     

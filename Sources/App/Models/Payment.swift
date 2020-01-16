@@ -42,5 +42,17 @@ final class Payment: PostgreSQLModel {
     var createdAt: Date?
     var updatedAt: Date?
     var deletedAt: Date?
+    
+    init(id: Int?, userId: Int, purposeId: Int, ammount: Double, channel: String, paymentMethod: String, paymentDate: Date, state: String) {
+        self.id = id
+        self.ammount = ammount
+        self.userId = userId
+        self.purposeId = purposeId
+        self.channel = channel
+        self.paymentMethod = paymentMethod
+        self.paymentDate = paymentDate
+        self.state = state
+        
+    }
 
 }

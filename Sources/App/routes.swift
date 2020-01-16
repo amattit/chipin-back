@@ -6,6 +6,7 @@ public func routes(_ router: Router) throws {
     // public routes
     let userController = UserController()
     let purposeController = PurposeController()
+    let paymentController = PaymentController()
 //    router.post("users", use: userController.create)
     
     // bearer / token auth protected routes
@@ -27,6 +28,8 @@ public func routes(_ router: Router) throws {
     bearer.put("person", "state", use: userController.addPurposeMember)
     
     bearer.get("purpose", "find", use: purposeController.findByState)
+    
+    bearer.post("purpose", Int.parameter, "payment", use: paymentController.addPaymentData)
 //    bearer.get("purpose", "find", use: purposeController.findInitialPurpose)
     
 }
