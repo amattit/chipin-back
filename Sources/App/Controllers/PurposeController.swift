@@ -134,7 +134,7 @@ class PurposeController {
     }
     
     private func getPurposeData(_ req: Request, purposeUser: PurposeUser) throws -> Future<Purpose> {
-        purposeUser.purpose.query(on: req).first().unwrap(or: Abort(.badRequest, reason: "Не удалось найти Кампанию"))
+        return purposeUser.purpose.query(on: req).first().unwrap(or: Abort(.badRequest, reason: "Не удалось найти Кампанию"))
     }
     
     private func getPurposeUsers(_ req: Request, purpose: Purpose) throws -> Future<[User]> {
