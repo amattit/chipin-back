@@ -45,7 +45,6 @@ final class UserController {
             let client = HTTPClient.connect(hostname: "smsc.ru", on: req)
 
             return client.flatMap(to: HTTPStatus.self) { client in
-                print(httpReq)
                 return client.send(httpReq).transform(to: HTTPStatus.ok)
             }
         }

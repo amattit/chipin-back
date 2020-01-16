@@ -64,7 +64,6 @@ class AuthUserTmpData {
     public func addCode(for phone: Phone, name: String) -> Code {
         
         let code = generateCode()
-        print(code)
         let data = UserData(name: name, phone: phone, code: code)
         
         tmpUserAndCodes.removeAll { (userData) -> Bool in
