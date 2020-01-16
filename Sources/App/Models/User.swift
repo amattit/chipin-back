@@ -61,7 +61,7 @@ class AuthUserTmpData {
     
     private init() {}
     
-    public func addCode(for phone: Phone, name: String) {
+    public func addCode(for phone: Phone, name: String) -> Code {
         
         let code = generateCode()
         print(code)
@@ -72,6 +72,7 @@ class AuthUserTmpData {
         }
         
         tmpUserAndCodes.append(data)
+        return code
     }
     
     public func getCode(for phone: Phone) -> Code? {

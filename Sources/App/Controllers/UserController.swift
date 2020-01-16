@@ -32,7 +32,13 @@ final class UserController {
     
     func authorize(_ req: Request) throws -> Future<HTTPStatus> {
         return try req.content.decode(CreateUserRequest.self).map { request in
-            AuthUserTmpData.shared.addCode(for: request.phoneNumber, name: request.name)
+            let code = AuthUserTmpData.shared.addCode(for: request.phoneNumber, name: request.name)
+            let client = HTTPClient.connect(hostname: "https://smsc.ru", on: req)
+            
+            try client.map {clientRes in
+                let smsRequest = HTTPRequest(method: .GET, url: "/sys/send.php?login=_silo@mail.ru&psw=jGA76A81&phones=7\(request.phoneNumber)&mes=Ваш код доступа к приложению: \(code)")
+                clientRes.send(smsRequest).wait()
+            }
             return HTTPStatus.ok
         }
     }
