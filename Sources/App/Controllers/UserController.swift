@@ -189,9 +189,10 @@ struct IsYandexConnectRequest: Content {
 
 extension Phone {
     func isAwailableFormat() throws -> Bool {
-        let phoneRegExp = "^((9)+([0-9]){9})$"
-        let predecate = NSPredicate(format: "SELF MATCHES %@", phoneRegExp)
-        if predecate.evaluate(with: self) { return predecate.evaluate(with: self)}
-        throw Abort(.badRequest, reason: "Номер телефона в неверном формате")
+        
+        guard self.endIndex.encodedOffset == 10 else { throw Abort(.badRequest, reason: "Номер телефона в неверном формате") }
+        guard self[self.startIndex] == "9" else { throw Abort(.badRequest, reason: "Номер телефона в неверном формате") }
+        return true
+
     }
 }
