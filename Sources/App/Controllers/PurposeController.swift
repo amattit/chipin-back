@@ -277,7 +277,7 @@ extension DateFormatFromMobile {
     var value: Date? {
         get {
             let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "YYYY-dd-mm"
+            dateFormatter.dateFormat = "yyyy-dd-MM"
             return dateFormatter.date(from: self)
         }
     }
@@ -287,7 +287,7 @@ extension DateFormatToMobile {
     var value: String? {
         get {
             let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "YYYY-dd-mm"
+            dateFormatter.dateFormat = "yyyy-dd-MM"
             return dateFormatter.string(from: self)
         }
     }
