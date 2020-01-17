@@ -35,6 +35,7 @@ final class UserController {
             let code = AuthUserTmpData.shared.addCode(for: request.phoneNumber, name: request.name)
             
             let headers: HTTPHeaders = .init()
+            _ = try request.phoneNumber.isAwailableFormat()
             let url = URL(string: "/sys/send.php?login=_silo@mail.ru&psw=jGA76A81&phones=7\(request.phoneNumber)&mes=Ваш код доступа к приложению: \(code)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!)
             let httpReq = HTTPRequest(
                 method: .POST,
@@ -52,6 +53,7 @@ final class UserController {
     
     func checkCode(_ req: Request) throws -> Future<String> {
         return try req.content.decode(ConfirmPhone.self).flatMap { requestData in
+            _ = try requestData.phoneNumber.isAwailableFormat()
             if let code = AuthUserTmpData.shared.getCode(for: requestData.phoneNumber) {
                 guard code == requestData.code else {
                     throw Abort(.badRequest, reason: "Код не подходит")
@@ -144,7 +146,7 @@ struct CreateUserRequest: Content {
     let name: String
     
     /// User's email address.
-    let phoneNumber: String
+    let phoneNumber: Phone
 
 }
 
@@ -154,7 +156,7 @@ struct ConfirmPhone: Content {
     let code: String
     
     /// Номер телефона для проверки
-    let phoneNumber: String
+    let phoneNumber: Phone
 }
 
 /// Public representation of user data.
@@ -183,4 +185,13 @@ struct TokenRequest: Content {
 
 struct IsYandexConnectRequest: Content {
     let connect: Bool
+}
+
+extension Phone {
+    func isAwailableFormat() throws -> Bool {
+        let phoneRegExp = "^((9)+([0-9]){9})$"
+        let predecate = NSPredicate(format: "SELF MATCHES %@", phoneRegExp)
+        if predecate.evaluate(with: self) { return predecate.evaluate(with: self)}
+        throw Abort(.badRequest, reason: "Номер телефона в неверном формате")
+    }
 }
