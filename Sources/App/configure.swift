@@ -24,8 +24,12 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
 
     // Configure a SQLite database
 //    let sqlite = try SQLiteDatabase(storage: .memory)
-    
-    let psql = PostgreSQLDatabase(config: PostgreSQLDatabaseConfig(hostname: "clients01.qcaet9meah.postgresql.eu.vapor.cloud", port: 5432, username: "db526f8447c9cd5b2c", database: "db526f8447c9cd5b2c", password: "a697c461104f17a6", transport: .unverifiedTLS))
+    let psql = PostgreSQLDatabase(config: PostgreSQLDatabaseConfig(hostname: Environment.get("DB_HOST")!,
+                                                                   port: 5432,
+                                                                   username: Environment.get("DB_USER")!,
+                                                                   database: Environment.get("DB_USER"),
+                                                                   password: Environment.get("DB_PASS"),
+                                                                   transport: .unverifiedTLS))
 
     // Register the configured SQLite database to the database config.
     var databases = DatabasesConfig()
