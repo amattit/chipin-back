@@ -14,7 +14,7 @@ class PurposeController {
         let user = try req.requireAuthenticated(User.self)
         return try req.content.decode(CreatePurposeRequest.self).flatMap { result in
             
-            return Purpose(id: nil, title: result.name, imagePath: result.imageUrl ?? "", description: result.description, finishDate: result.finishDate.value, targetAmmount: result.targetAmmount).save(on: req)
+            return Purpose(id: nil, title: result.name, imagePath: result.imageUrl ?? "", description: result.description ?? "", finishDate: result.finishDate?.value ?? Date(), targetAmmount: result.targetAmmount).save(on: req)
                 .map { purpose in
                     let _ = PurposeUser(userId: try user.requireID(), purposeId: try purpose.requireID(), state: PurposeUserState.initital).save(on: req)
                     
@@ -235,10 +235,10 @@ struct GetPurposeResponse: Content {
 
 struct CreatePurposeRequest: Content {
     var imageUrl: String?
-    let targetAmmount: Double
-    let currentAmmount: Double
-    let description: String
-    let finishDate: DateFormatFromMobile
+    let targetAmmount: Double?
+    let currentAmmount: Double?
+    let description: String?
+    let finishDate: DateFormatFromMobile?
     let name: String
     let persons: [CreatePurposeUserRequest]
 }
