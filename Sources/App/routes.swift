@@ -24,13 +24,10 @@ public func routes(_ router: Router) throws {
     bearer.get("purpose", Int.parameter, use: purposeController.fetchPurposeById)
     bearer.delete("purpose", Int.parameter, use: purposeController.archivePurpose)
     bearer.put("purpose", Int.parameter, use: purposeController.editPurpose)
+    bearer.get("purpose", "find", use: purposeController.findByState)
+    bearer.post("purpose", Int.parameter, "payment", use: paymentController.addPaymentData)
     
     bearer.put("person", "state", use: userController.addPurposeMember)
-    
-    bearer.get("purpose", "find", use: purposeController.findByState)
-    
-    bearer.post("purpose", Int.parameter, "payment", use: paymentController.addPaymentData)
-//    bearer.get("purpose", "find", use: purposeController.findInitialPurpose)
     bearer.put("person", use: userController.editUserRequest)
     bearer.put("person", "token", use: userController.addDeviceToken)
     bearer.put("yandex", use: userController.setYandexConnect)
