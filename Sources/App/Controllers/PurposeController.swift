@@ -138,7 +138,28 @@ class PurposeController {
             .query(on: req)
             .filter(\.userId, .equal, try user.requireID())
             .filter(\.state, .equal, stateRequest.state).all()
-            .flatMap { return try $0.map { try self.getPurposeData1(req, purposeUser: $0)}
+            .flatMap { return try $0.map { item in
+//                try self.getPurposeData1(req, purposeUser: $0)
+                try self.getPurposeData(req, purposeUser: item).flatMap { purpose in
+                    return try self.getPurposeData1(req, purposeUser: item).flatMap { purposeResponse in
+                        return try self.getPurposeUsers1(req, purpose: purpose).and(result: purposeResponse).map { (users, purposeR) in
+                            var response = purposeR
+                            response.persons = users
+                            var ca = 0.0
+                            for user in users {
+                                for paymen in user.payments {
+                                    if paymen.state == "DONE" {
+                                        ca += paymen.ammount
+                                    }
+                                    
+                                }
+                            }
+                            response.currentAmmount = ca
+                            return response
+                        }
+                    }
+                }
+            }
                 .flatten(on: req)
         }
     }
