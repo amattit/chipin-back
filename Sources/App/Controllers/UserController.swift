@@ -51,7 +51,7 @@ final class UserController {
         }
     }
     
-    func checkCode(_ req: Request) throws -> Future<String> {
+    func checkCode(_ req: Request) throws -> Future<UserToken> {
         return try req.content.decode(ConfirmPhone.self).flatMap { requestData in
             _ = try requestData.phoneNumber.isAwailableFormat()
             if let code = AuthUserTmpData.shared.getCode(for: requestData.phoneNumber) {
@@ -64,7 +64,7 @@ final class UserController {
                         let token = try UserToken.create(userID: u.requireID())
                         return token.save(on: req).map { token in
                             AuthUserTmpData.shared.removeUserData(for: requestData.phoneNumber)
-                            return token.string
+                            return token
                         }
                     } else {
                         let userData = AuthUserTmpData.shared.getUserData(for: requestData.phoneNumber)
@@ -72,7 +72,7 @@ final class UserController {
                             let token = try UserToken.create(userID: user.requireID())
                             return token.save(on: req).map { token in
                                 AuthUserTmpData.shared.removeUserData(for: requestData.phoneNumber)
-                                return token.string
+                                return token
                             }
                         }
                     }

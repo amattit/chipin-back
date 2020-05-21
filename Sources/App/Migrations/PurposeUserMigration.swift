@@ -9,8 +9,8 @@
 import Vapor
 import FluentPostgreSQL
 
-extension PurposeUser: Migration {
-    
+extension PurposeUser: PostgreSQLMigration {
+
     static func prepare(on connection: PostgreSQLConnection) -> EventLoopFuture<Void> {
         Database.create(PurposeUser.self, on: connection) { builder in
             builder.field(for: \.id, isIdentifier: true)

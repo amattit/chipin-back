@@ -9,7 +9,7 @@ import FluentPostgreSQL
 import Vapor
 
 /// Allows `User` to be used as a Fluent migration.
-extension Purpose: Migration {
+extension Purpose: PostgreSQLMigration {
     /// See `Migration`.
     static func prepare(on connection: PostgreSQLConnection) -> EventLoopFuture<Void> {
         Database.create(Purpose.self, on: connection) { builder in

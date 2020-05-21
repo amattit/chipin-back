@@ -62,7 +62,7 @@ extension UserToken: Token {
 }
 
 /// Allows `UserToken` to be used as a Fluent migration.
-extension UserToken: Migration {
+extension UserToken: PostgreSQLMigration {
     /// See `Migration`.
     static func prepare(on connection: PostgreSQLConnection) -> Future<Void> {
         Database.create(UserToken.self, on: connection) { builder in
