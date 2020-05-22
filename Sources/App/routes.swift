@@ -31,5 +31,5 @@ public func routes(_ router: Router) throws {
     bearer.put("person", use: userController.editUserRequest)
     bearer.put("person", "token", use: userController.addDeviceToken)
     bearer.put("yandex", use: userController.setYandexConnect)
-    
+    bearer.get("user", use: userController.getUser)
 }

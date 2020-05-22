@@ -17,18 +17,18 @@ final class UserController {
     }
     
     /// Creates a new user.
-    func create(_ req: Request) throws -> Future<UserResponse> {
-        // decode request content
-        return try req.content.decode(CreateUserRequest.self).flatMap { user -> Future<User> in
-            
-            // save new user
-            return User(id: nil, name: user.name, phone: user.phoneNumber)
-                .save(on: req)
-        }.map { user in
-            // map to public user response (omits password hash)
-            return try UserResponse(id: user.requireID(), name: user.name)
-        }
-    }
+//    func create(_ req: Request) throws -> Future<UserResponse> {
+//        // decode request content
+//        return try req.content.decode(CreateUserRequest.self).flatMap { user -> Future<User> in
+//
+//            // save new user
+//            return User(id: nil, name: user.name, phone: user.phoneNumber)
+//                .save(on: req)
+//        }.map { user in
+//            // map to public user response (omits password hash)
+//            return try UserResponse(id: user.requireID(), name: user.name)
+//        }
+//    }
     
     func authorize(_ req: Request) throws -> Future<HTTPStatus> {
         return try req.content.decode(CreateUserRequest.self).flatMap { request in
@@ -77,8 +77,6 @@ final class UserController {
                         }
                     }
                 }
-                
-                
             } else {
                 throw Abort(.badRequest, reason: "Повторите процедуру аутентификации заново")
             }
@@ -124,6 +122,11 @@ final class UserController {
         }
     }
     
+    public func getUser(_ req: Request) throws -> Future<UserResponse> {
+        let user = try req.requireAuthenticated(User.self)
+        return req.future(UserResponse(id: try user.requireID(), name: user.name, phoneNumber: user.phoneNumber, imagePath: user.imagePath, isYandexConnect: user.isYandexConnect))
+    }
+    
     public func setYandexConnect(_ req: Request) throws -> Future<HTTPStatus> {
         let user = try req.requireAuthenticated(User.self)
         return try req.content.decode(IsYandexConnectRequest.self).flatMap { request in
@@ -167,6 +170,12 @@ struct UserResponse: Content {
     
     /// User's full name.
     var name: String
+    
+    var phoneNumber: String
+    
+    var imagePath: String?
+    
+    var isYandexConnect: Bool
 }
 
 struct AddPurposeMemberRequest: Content {
